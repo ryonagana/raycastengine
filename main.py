@@ -56,19 +56,7 @@ testmap =[
 window = None
 screen = None
 
-
-
-
-
-
-
-
-
-            
-            
-            
-            
-        
+  
 
 def main():
     

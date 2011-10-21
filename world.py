@@ -10,11 +10,11 @@ class World(object):
         
     
     def __init__(self, worldmap,  sprite_positions, x,y,dirx,diry,planex,planey):
-        self.background = None
-        self.camera  = Camera(x,y,dirx,diry,planex,planey)
-        self.world = worldmap
+        self.background = None  # map background
+        self.camera  = Camera(x,y,dirx,diry,planex,planey)  #instance of camera
+        self.world = worldmap # a copy of temporary test map
         
-        self.walls = [
+        self.walls = [  #store wall's PNG 
                         LoadImage(pygame.image.load("data/redbrick.png").convert(),  True),
                       LoadImage(pygame.image.load("data/redbrick.png").convert(),  True) ]
         
@@ -22,24 +22,27 @@ class World(object):
        
         
         
-        
-    def  RenderCast(self, surface):
+    # main render of the world
     
-        w = surface.get_width()
-        h = surface.get_height()
+    def  RenderCast(self, surface):  #surface is a reference to main screen buffer
+    
+        w = surface.get_width()  # copy surface width 
+        h = surface.get_height() # copy surface height
         
         
-        if self.background == None:
+        if self.background == None:  
             self.background = pygame.transform.scale(pygame.image.load("data/bg.png").convert(), (w,h))
             
-        surface.blit(self.background, (0,0))
+        surface.blit(self.background, (0,0))  #render backround on window
         
         
         zbuffer = []
             
         
-    
-        for x in range(w):
+        #
+        # increments w  until reach  width
+        #
+        for x in range(w):  
             cameraX = float(2 * x / float(w) - 1)
             rayPosX = self.camera.x
             rayPosY = self.camera.y
@@ -93,7 +96,7 @@ class World(object):
                 
                 
         
-        
+            #fish eye effect
             if side == 0:
                 perpWallDist = (abs((mapX - rayPosX + ( 1 - stepX) / 2  ) / rayDirX))
             else:
