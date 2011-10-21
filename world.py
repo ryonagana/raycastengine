@@ -15,9 +15,14 @@ class World(object):
         self.world = worldmap
         
         self.walls = [
-                      LoadImage( pygame.image.load("data/redbrick.png").convert(), False),
-                       LoadImage( pygame.image.load("data/redbrick.png").convert(), False) 
-                      ]
+                      [
+                      LoadImage( pygame.image.load("data/redbrick.png").convert(),  True),
+                       LoadImage( pygame.image.load("data/redbrick.png").convert(), True) 
+                      ]]
+        
+        
+       
+        
         
         
     def  RenderCast(self, surface):
@@ -26,7 +31,13 @@ class World(object):
         h = surface.get_height()
         
         
-
+        if self.background == None:
+            self.background = pygame.transform.scale(pygame.image.load("data/bg.png").convert(), (w,h))
+            
+        surface.blit(self.background, (0,0))
+        
+        
+        zbuffer = []
             
         
     
@@ -130,8 +141,11 @@ class World(object):
             lineheight = 10000
             drawstart =  -10000 / 2 + h / 2
             
-        surface.blit(  pygame.transform.scale(self.walls[0][textureX], (1,lineheight)), (x, drawstart))
-            
+        #apenas para teste
+        surface.blit( pygame.transform.scale( pygame.image.load("data/redbrick.png").convert()   , (1,lineheight)), (x, drawstart))
+        
+        
+        zbuffer.append(perpWallDist)
         
         
             

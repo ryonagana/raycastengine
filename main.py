@@ -1,26 +1,29 @@
 import pygame
+from pygame.locals import *
 from world import *
 
-pygame.init();
+#resolution of window
 size = [640,480]
 
 
-posX = 22.0
+#some globals variables  (FIX LATER)
+
+posX = 10.0
 posY =  12.0
 
 dirX = -1
 dirY = 0
 
 planeX = 0
-planeY = 0.66
+planeY = .66
 
 
-
+#color RED
 red = (255,0,0)
 
 
 
-
+#map example
 testmap =[
  [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
  [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
@@ -50,19 +53,17 @@ testmap =[
 
 
 
-window = pygame.display.set_mode(size)
-screen = pygame.display.get_surface()
-
-pygame.display.set_caption("Teste")
-
-
-
-clock = pygame.time.Clock()
+window = None
+screen = None
 
 
 
 
-world = World(testmap, 0, 22, 11.5,  dirX, dirY, planeX, planeY)
+
+
+
+
+
             
             
             
@@ -71,31 +72,53 @@ world = World(testmap, 0, 22, 11.5,  dirX, dirY, planeX, planeY)
 
 def main():
     
-    done = False
+    #init pygame on the project
+    pygame.init();
     
-    d = pygame.font.SysFont(pygame.font.get_default_font(), 20)
     
-    while done == False:
+    window = pygame.display.set_mode(size)  # sets the pygame resolution window
+    screen = pygame.display.get_surface() # make a  surface copy  (main buffer)
+    pygame.display.set_caption("Teste")  #  put a caption on the top od the window
+    
+    clock = pygame.time.Clock() # stores the cycle of every tick (time of  each tick)
+    
+    world = World(testmap, 0, 22, 11.5,  dirX, dirY, planeX, planeY) #  create a new world map + camera position
+    
+    
+    done = False  #   the main loop controller, tell if the program still running or is about to close
+    
+    d = pygame.font.SysFont(pygame.font.get_default_font(), 20)  #  just wrapper to print FPS
+    
+    
+    # MAIN LOOP
+    
+    while done == False: 
         
-        clock.tick(60)
+        clock.tick(60)  #sets   60 / 1000.0 milliseconds per tick  (or 60 FPS)
+        screen.fill((0,0,0))  # erase screen for new tick  render  a new frame
         world.RenderCast(screen)
-        text = d.render( str(clock.get_fps()), False, (255,255,255))
-        screen.blit(text, text.get_rect(), text.get_rect())
+        text = d.render( str(clock.get_fps()), False, (255,255,255)) # render the text of FPS on screen
+        screen.blit(text, text.get_rect(), text.get_rect()) #put on screen
         
-        pygame.display.flip()
-        
-        
-        frametime = float(clock.get_time() / 1000.0 )
+        pygame.display.flip()  #gather all render elements put all screen  and clear  backbuffer to put a new render
         
         
-        movespeed = frametime * 5.0
-        rotationspeed  = frametime * 3.0
+        frametime = float(clock.get_time() / 1000.0 )   # get the time of each frame takes long
         
         
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
+        movespeed = frametime * 5.0  # speed of main character
+        rotationspeed  = frametime * 3.0  # rotation speed  of character (ok, it's global but i'll fix it later)
+        
+        
+        for event in pygame.event.get():  # main event of the program
+            if event.type == pygame.QUIT:  # if the people clicks on "X" or Xed the window it simply closes
                 done = True
-            if(event.type == KEYUP ):
+                
+            elif event.type == KEYDOWN:  # checks  a keydown on your keyboard 
+                if event.key == K_ESCAPE:   #if  press ESCAPE
+                    done = True
+            
+            elif(event.type == KEYUP ):
                 
                 key = pygame.key.get_pressed()
                 
