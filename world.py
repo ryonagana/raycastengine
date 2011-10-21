@@ -15,10 +15,8 @@ class World(object):
         self.world = worldmap
         
         self.walls = [
-                      [
-                      LoadImage( pygame.image.load("data/redbrick.png").convert(),  True),
-                       LoadImage( pygame.image.load("data/redbrick.png").convert(), True) 
-                      ]]
+                        LoadImage(pygame.image.load("data/redbrick.png").convert(),  True),
+                      LoadImage(pygame.image.load("data/redbrick.png").convert(),  True) ]
         
         
        
@@ -81,71 +79,75 @@ class World(object):
             
             
         
-        while hit == 0:
-            if( sideDistX < sideDistY):
-                sideDistX += stepX
-                side = 0
+            while hit == 0:
+                if( sideDistX < sideDistY):
+                    sideDistX += stepX
+                    side = 0
+                else:
+                    sideDistY += deltaDistY
+                    mapY += stepY
+                    side = 1
+            
+                if( self.world[mapX][mapY] > 0 ):  
+                    hit = 1
+                
+                
+        
+        
+            if side == 0:
+                perpWallDist = (abs((mapX - rayPosX + ( 1 - stepX) / 2  ) / rayDirX))
             else:
-                sideDistY += deltaDistY
-                mapY += stepY
-                side = 1
-            
-            if( self.world[mapX][mapY] > 0 ):
-                hit = 1
-                
-                
-        
-        
-        if side == 0:
-            perpWallDist = (abs((mapX - rayPosX + ( 1 - stepX) / 2  ) / rayDirX))
-        else:
-            perpWallDist = (abs((mapY - rayPosY + ( 1 - stepY) / 2  ) / rayDirY))
+                perpWallDist = (abs((mapY - rayPosY + ( 1 - stepY) / 2  ) / rayDirY))
             
             
-        if( perpWallDist == 0): perpWallDist = 0.00001
+            if( perpWallDist == 0): perpWallDist = 0.00001
             
         
-        lineheight = abs(int(h / perpWallDist))
+            lineheight = abs(int(h / perpWallDist))
         
-        drawstart = - lineheight / 2 + h / 2
+            drawstart = - lineheight / 2 + h / 2
         
-        drawend = lineheight / 2 + h / 2
+            drawend = lineheight / 2 + h / 2
         
-        if( drawstart < 0 ): drawstart = 0
-        
-        
-        
-        if( drawend >= h ): drawend = w - 1
+            if( drawstart < 0 ): drawstart = 0
         
         
-        texNum = self.world[mapX][mapY] - 1
-        wallX = 0
         
-        if( side == 1): wallX = rayPosX + (( mapY + rayPosY + (1 - stepY) / 2) / rayDirY) * rayDirX
-        else: wallX = rayPosX + (( mapX + rayPosX + (1 - stepX) / 2) / rayDirX) * rayDirY
+            if( drawend >= h ): drawend = w - 1
         
-        wallX -= math.floor(wallX)
         
-        textureX = int(wallX * float(textureWidth))
+            texNum = self.world[mapX][mapY] - 1
         
-        if( side == 0  and rayDirX > 0 ):
-            textureX =  textureWidth - textureX - 1
+        
+            wallX = .0
+        
+            if( side == 1): wallX = rayPosX + (( mapY - rayPosY + (1 - stepY) / 2) / rayDirY) * rayDirX
+            else: wallX = rayPosX + (( mapX - rayPosX + (1 - stepX) / 2) / rayDirX) * rayDirY
+        
+            wallX -= math.floor(wallX)
+        
+        
+        
+            textureX = int(wallX * float(textureWidth))
+        
+            if( side == 0  and rayDirX > 0 ):
+                textureX =  textureWidth - textureX - 1
             
-        if( side == 1 and rayDirY < 0):
-            textureX = textureWidth - textureX - 1
+            if( side == 1 and rayDirY < 0):
+                textureX = textureWidth - textureX - 1
             
-        if side == 1:
-            texNum += 8
+            if side == 1:
+                texNum += 8
             
-        if lineheight > 10000:
-            lineheight = 10000
-            drawstart =  -10000 / 2 + h / 2
+            if lineheight > 10000:
+                lineheight = 10000
+                drawstart =  -10000 / 2 + h / 2
             
         #apenas para teste
-        surface.blit( pygame.transform.scale( pygame.image.load("data/redbrick.png").convert()   , (1,lineheight)), (x, drawstart))
+            surface.blit( pygame.transform.scale( self.walls[texNum][0], (1,lineheight)), (x, drawstart))
         
         
-        zbuffer.append(perpWallDist)
+            zbuffer.append(perpWallDist)
         
         
             
@@ -171,8 +173,9 @@ class Camera(object):
 
     
 def LoadImage(image,dark,colorkey = None):
-    ret = []
     
+    ret = []
+        
     if( colorkey is not None):
         image.set_colorkey( colorkey)
         
@@ -186,8 +189,9 @@ def LoadImage(image,dark,colorkey = None):
         
         if colorkey is not None:
             surface.set_colorkey(colorkey)
-            ret.append(surface)
-            
+        
+        ret.append(surface)
+        #ret = surface
         return ret
     
     
